@@ -16,11 +16,11 @@ class Policy {
 
   Policy(this.key, this.bucket, this.datetime, this.expiration, this.credential,
       this.maxFileSize, this.acl,
-      {this.region = 'us-east-2'});
+      {this.region = 'ap-south-1'});
 
   factory Policy.fromS3PresignedPost(String key, String bucket,
       String accessKeyId, int expiryMinutes, int maxFileSize, ACL acl,
-      {String region = 'us-east-2'}) {
+      {String region = 'ap-south-1'}) {
     final datetime = SigV4.generateDatetime();
     final expiration = (DateTime.now())
         .add(Duration(minutes: expiryMinutes))

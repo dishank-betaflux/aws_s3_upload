@@ -25,7 +25,7 @@ class AwsS3 {
 
     /// The file to upload
     required File file,
-    
+
     /// The key to save this file as. Will override destDir and filename if set.
     String? key,
 
@@ -33,11 +33,11 @@ class AwsS3 {
     String destDir = '',
 
     /// The AWS region. Must be formatted correctly, e.g. us-west-1
-    String region = 'us-east-2',
+    String region = 'ap-south-1',
 
     /// Access control list enables you to manage access to bucket and objects
     /// For more information visit [https://docs.aws.amazon.com/AmazonS3/latest/userguide/acl-overview.html]
-    ACL acl = ACL.public_read,
+    ACL acl = ACL.private,
 
     /// The filename to upload as. If null, defaults to the given file's current filename.
     String? filename,
@@ -50,10 +50,14 @@ class AwsS3 {
 
     final uri = Uri.parse(endpoint);
     final req = http.MultipartRequest("POST", uri);
-    final multipartFile = http.MultipartFile('file', stream, length, filename: path.basename(file.path));
+    final multipartFile = http.MultipartFile('file', stream, length,
+        filename: path.basename(file.path));
 
-    final policy = Policy.fromS3PresignedPost(uploadKey, bucket, accessKey, 15, length, acl, region: region);
-    final signingKey = SigV4.calculateSigningKey(secretKey, policy.datetime, region, 's3');
+    final policy = Policy.fromS3PresignedPost(
+        uploadKey, bucket, accessKey, 15, length, acl,
+        region: region);
+    final signingKey =
+        SigV4.calculateSigningKey(secretKey, policy.datetime, region, 's3');
     final signature = SigV4.calculateSignature(signingKey, policy.encode());
 
     req.files.add(multipartFile);
